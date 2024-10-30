@@ -1,5 +1,5 @@
 # Task Management with FreeRTOS
-This project demonstrates a C program designed to manage task execution on a MCU(Arduino uno, ESP32...) for efficient sensor data reading, processing, and LED notification. The primary goal of this code is to illustrate how FreeRTOS is used to manage concurrent tasks while optimizing energy consumption by utilizing the MCU’s sleep mode. This functionality is achieved through an interrupt-driven approach where the MCU stays in a low-power state until it receives a sensor data request from the I2C master.
+This project demonstrates a C program designed to manage task execution on a MCU(Arduino uno, ESP32...) for efficient sensor data reading, processing, and LED notification. The primary goal of this code is to illustrate how FreeRTOS is used to manage concurrent tasks while optimizing energy consumption by utilizing the MCU’s sleep mode. This functionality is achieved through an interrupt-driven approach where the MCU stays in IDLE mode (alow-power state) until it receives a sensor data request from the I2C master.
 
 ## Project Overview
 In this project:
@@ -26,9 +26,11 @@ git clone https://github.com/Khalid-Bo/FreeRTOS_Slave_node.git
 2. Compile and Flash the Code to the MCU using appropiate IDE-env
 
 ## Usage
-1. Connect your Sensor and LEDs to the MCU as described in the HW setup.
-2. Once flashed, the MCU will remain in sleep mode by default.
-3. The I2C master can trigger the MCU to wake up, at which point it will:
+1. Connect your Sensor and LEDs to the i2c slave MCU.
+2. Connect I2C slave MCU to I2c master MCU using I2C wires (SDA,SCL)
+3. Add interrup wire output from master and connect to input pin of the Slave   
+3. Once flashed, the MCU will remain in sleep mode by default.
+4. The I2C master can trigger the MCU to wake up, at which point it will:
    * Read sensor data.
    * Process the data and execute necessary tasks.
    * Indicate task completion using LEDs.
@@ -37,7 +39,7 @@ git clone https://github.com/Khalid-Bo/FreeRTOS_Slave_node.git
 1. FreeRTOS_ISR_Slave_node.c: Contains the main program logic with FreeRTOS task definitions, ISR handling, and task scheduling.
 2. Task Functions :
     * Read_Sensor_Data : Defines sensor reading task.
-    * Process_Sensor_Data : Defins the procees task on the sensor data.
+    * ConsolDisplay_Sensor_Data : Defins the procees task on the sensor data.
     * Notify_Output: Manages LED notifications based on processed sensor data.
 
 ## Contributing

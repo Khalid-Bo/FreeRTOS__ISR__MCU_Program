@@ -31,7 +31,7 @@ void setup() {
     Wire.onRequest(I2C_Transfer_Function);
 
     xTaskCreate(Read_Sensor_Data, "Read Sensor data", 400, NULL, 1, NULL);
-    xTaskCreate(Process_Sensor_Data, "Process Sensor Data", 128, (void*)&Sensor_data, 1, NULL);
+    xTaskCreate(ConsolDisplay_Sensor_Data, "Display Sensor Information on the console", 128, (void*)&Sensor_data, 1, NULL);
     xTaskCreate(Notify_Output, "Notify With LEDs", 128, (void*)&Sensor_data, 1, NULL);
 
     esp_sleep_enable_ext0_wakeup(ISRinterrupt_Pin, LOW); // Enable wake-up by external interrupt
@@ -49,7 +49,7 @@ void Read_Sensor_Data(void *pvParameters) {
     }
 }
 
-void Process_Sensor_Data(void *pvParameters) {
+void ConsolDisplay_Sensor_Data(void *pvParameters) {
     while(1) {
         V = *((float*)pvParameters);
         Serial.print("Sensor Data: ");
