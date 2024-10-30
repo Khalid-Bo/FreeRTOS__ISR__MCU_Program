@@ -93,7 +93,7 @@ void toggleLED(int pin) {
     vTaskDelay(pdMS_TO_TICKS(200));}
 
 void I2C_Transfer_Function(void *pvParameters){  
-    Wire.write((int)Sensor_data); // Sending Integer Data
+    Wire.write((int)Sensor_data);                             // Sending Integer Data
   //Wire.write((uint8_t*)&Sensor_data, sizeof(Sensor_data)); // Sending Precise Sensor Informations type Float 
   } 
 
