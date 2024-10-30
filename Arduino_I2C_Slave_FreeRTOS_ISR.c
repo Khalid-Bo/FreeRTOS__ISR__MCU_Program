@@ -72,17 +72,17 @@ void Notify_Output(void *pvParameters){
 
     if (Vn <= Min_Value)  // if the Sensor value is lower than our min value posed the The Yellow LED will blink  
     {
-      toggleLED(LED_Yellow)
+      toggleLED(LED_Yellow);
     }
     
     else if (Vn>Min_Value and Vn <Max_Value) // if the Sensor value is between the max and min value posed the The Green LED will blink  
     {
-      toggleLED(LED_Green)
+      toggleLED(LED_Green);
     }
         
     else  // if the Sensor value is higher than the Max value posed the The Red LED will blink  
     {
-      toggleLED(LED_Red)
+      toggleLED(LED_Red);
     }
   }}
 
