@@ -37,16 +37,15 @@ void setup() {
   Wire.begin(I2C_SLAVE_ADDRESS);    
   Wire.onRequest(I2C_Transfer_Function);
   
-  xTaskCreate(Read_Sensor_Data, "Read Sensor data", 400, NULL ,1,NULL);
-  xTaskCreate(Process_Sensor_Data, "Process Sensor Data", 128, (void*)&Sensor_data,1,NULL);
-  xTaskCreate(Notify_Output, "Notify With LEDs", 128, (void*)&Sensor_data,1,NULL);
+  xTaskCreate(Read_Sensor_Data, "Read Data from Sensor", 400, NULL ,1,NULL);
+  xTaskCreate(ConsolDisplay_Sensor_Data, "Display Reading Sensor data on Consol", 128, (void*)&Sensor_data,1,NULL);
+  xTaskCreate(Notify_Output, "Notify With LEDs the State of the Parameter Measured", 128, (void*)&Sensor_data,1,NULL);
 
-  attachInterrupt(digitalPinToInterrupt(ISRinterrupt_Pin),ISRinterrupt,LOW);
-  vTaskStartScheduler();
-}
+  attachInterrupt(digitalPinToInterrupt(ISRinterrupt_Pin),ISRinterrupt,LOW); // Interrupt function to ensure that our MCU will stay in idle mode until the master send Signal High that wake Up our MCU
+  vTaskStartScheduler();}
 
-void Read_Sensor_Data( void *pvParameters )
-{
+// Read_Sensor_Data function will Read data from sensor 
+void Read_Sensor_Data( void *pvParameters ){
   while(1)
   {
     Sensor_data = random(5,20);
@@ -55,56 +54,53 @@ void Read_Sensor_Data( void *pvParameters )
         Serial.println("Failed to read from sensor!");
       }
     vTaskDelay(100);
-  }
-}
+  }}
 
-void Process_Sensor_Data(void *pvParameters)
-{
+
+// Display Sensor Information on the console
+void ConsolDisplay_Sensor_Data(void *pvParameters){
   while(1)
   {
     V =*((float*)pvParameters);
     Serial.print("Sensor Data:");
     Serial.println(V);
-  }
-}
+  }}
 
 void Notify_Output(void *pvParameters){
   while(1){
     Vn =*((float*)pvParameters);
-    if (Vn <= Min_Value) {
-    digitalWrite(LED_Yellow,HIGH);
-    delay(200);
-    digitalWrite(LED_Yellow,LOW);
-    delay(200);
+
+    if (Vn <= Min_Value)  // if the Sensor value is lower than our min value posed the The Yellow LED will blink  
+    {
+      toggleLED(LED_Yellow)
     }
     
-    else if (Vn>Min_Value and Vn <Max_Value){
-    digitalWrite(LED_Green,HIGH);
-    delay(200);
-    digitalWrite(LED_Green,LOW);
-    delay(200);
+    else if (Vn>Min_Value and Vn <Max_Value) // if the Sensor value is between the max and min value posed the The Green LED will blink  
+    {
+      toggleLED(LED_Green)
     }
         
-    else {
-    digitalWrite(LED_Red,HIGH);
-    delay(200);
-    digitalWrite(LED_Red,LOW);
-    delay(200);
+    else  // if the Sensor value is higher than the Max value posed the The Red LED will blink  
+    {
+      toggleLED(LED_Red)
     }
-  }
-}
+  }}
 
-void I2C_Transfer_Function(void *pvParameters)
- {  
-    Wire.write((int)Sensor_data); 
+void toggleLED(int pin) {
+    digitalWrite(pin, HIGH);
+    vTaskDelay(pdMS_TO_TICKS(200));
+    digitalWrite(pin, LOW);
+    vTaskDelay(pdMS_TO_TICKS(200));}
+
+void I2C_Transfer_Function(void *pvParameters){  
+    Wire.write((int)Sensor_data); // Sending Integer Data
+  //Wire.write((uint8_t*)&Sensor_data, sizeof(Sensor_data)); // Sending Precise Sensor Informations type Float 
   } 
 
-void ISRinterrupt()
-{
+void ISRinterrupt(){
       sleep_cpu();
       digitalWrite(LED_Green,LOW);
       digitalWrite(LED_Red,LOW);
-      digitalWrite(LED_Yellow,LOW);
-}
+      digitalWrite(LED_Yellow,LOW);}
 
 void loop() {}
