@@ -1,20 +1,20 @@
 # Task Management with FreeRTOS
-This project demonstrates a C program designed to manage task execution on a MCU(Arduino uno, ESP32...) for efficient sensor data reading, processing, and LED notification. The primary goal of this code is to illustrate how FreeRTOS is used to manage concurrent tasks while optimizing energy consumption by utilizing the MCU’s sleep mode. This functionality is achieved through an interrupt-driven approach where the MCU stays in IDLE mode (alow-power state) until it receives a sensor data request from the I2C master.
+This project demonstrates a C program designed to manage task execution on a MCU(Arduino uno, ESP32...) for efficient sensor data reading, processing, and LED notification. The primary goal of this code is to illustrate how FreeRTOS is used to manage concurrent tasks while optimizing energy consumption by utilizing the MCU’s sleep mode. This functionality is achieved through an interrupt-driven approach where the MCU stays in IDLE mode (alow-power state) until it receives a sensor data request via interuption Pin.
 
 ## Project Overview
 In this project:
 - MCU handles sensor data acquisition, processing, and notification tasks.
 - FreeRTOS is utilized to manage task scheduling and prioritize tasks based on their urgency and functionality.
-- ISR (Interrupt Service Routine) wakes up the MCU from sleep mode upon receiving a request from the I2C master.
+- ISR (Interrupt Service Routine) wakes up the MCU from sleep mode upon receiving a request.
 - Energy efficiency is optimized by keeping the MCU in sleep mode when tasks are not in operation.
 
 ## Features
 - Task Management with FreeRTOS: Handles multiple tasks such as reading sensor data, processing it, and controlling LED indicators.
-- Power Management: Minimizes power consumption by keeping MCU in deep sleep mode until interrupted by I2C requests.
+- Power Management: Minimizes power consumption by keeping MCU in deep sleep mode until interrupted by Button.
 - LED Notification: Uses LEDs to notify the user of the sensor data status and task completion.
 
 ## Prerequisites
-- Hardware: MCU (I2C Slave), MCU (I2C Master), Sensor, and LEDs for notifications.
+- Hardware: MCU, Sensor, and LEDs for notifications.
 - Software: FreeRTOS libraries, IDE-env.
   
 ## Getting Started
@@ -26,17 +26,16 @@ git clone https://github.com/Khalid-Bo/FreeRTOS_Slave_node.git
 2. Compile and Flash the Code to the MCU using appropiate IDE-env
 
 ## Usage
-1. Connect your Sensor and LEDs to the i2c slave MCU.
-2. Connect I2C slave MCU to I2c master MCU using I2C wires (SDA,SCL)
-3. Add interrup wire output from master and connect to input pin of the Slave   
+1. Connect your Sensor and LEDs to the MCU (Arduino, ESP32).
+2. Add interrup a switch connected with 5V input    
 3. Once flashed, the MCU will remain in sleep mode by default.
-4. The I2C master can trigger the MCU to wake up, at which point it will:
+4. The Switch can trigger the MCU to wake up, at which point it will:
    * Read sensor data.
    * Process the data and execute necessary tasks.
    * Indicate task completion using LEDs.
 
 ## Code Structure
-1. FreeRTOS_ISR_Slave_node.c: Contains the main program logic with FreeRTOS task definitions, ISR handling, and task scheduling.
+1. FreeRTOS__ISR__node.c: Contains the main program logic with FreeRTOS task definitions, ISR handling, and task scheduling.
 2. Task Functions :
     * Read_Sensor_Data : Defines sensor reading task.
     * ConsolDisplay_Sensor_Data : Defins the procees task on the sensor data.
