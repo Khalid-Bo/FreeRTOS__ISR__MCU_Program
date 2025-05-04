@@ -5,10 +5,6 @@
 #include <avr/power.h>
 #include <task.h>
 
-
-// I2C slave adress
-#define I2C_SLAVE_ADDRESS 13
-
 //Variables
 int Max_Value = 12;
 int Min_Value = 6;
@@ -30,9 +26,6 @@ void setup() {
   pinMode(LED_Green, OUTPUT);
   pinMode(LED_Red, OUTPUT);
   pinMode(ISRinterrupt_Pin,INPUT);
-
-  Wire.begin(I2C_SLAVE_ADDRESS);    
-  Wire.onRequest(I2C_Transfer_Function);
   
   xTaskCreate(Read_Sensor_Data, "Read Data from Sensor", 400, NULL ,1,NULL);
   xTaskCreate(ConsolDisplay_Sensor_Data, "Display Reading Input data on Consol", 128, (void*)&data,1,NULL);
@@ -88,11 +81,6 @@ void toggleLED(int pin) {
     vTaskDelay(pdMS_TO_TICKS(200));
     digitalWrite(pin, LOW);
     vTaskDelay(pdMS_TO_TICKS(200));}
-
-void I2C_Transfer_Function(void *pvParameters){  
-    Wire.write((int)data);                             // Sending Integer Data
-  //Wire.write((uint8_t*)&data, sizeof(data)); // Sending Precise Sensor Informations type Float 
-  } 
 
 void ISRinterrupt(){
       sleep_cpu();
