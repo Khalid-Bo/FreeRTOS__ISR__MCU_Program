@@ -2,8 +2,6 @@
 #include <esp_sleep.h>
 #include <task.h>
 
-// I2C slave address
-#define I2C_SLAVE_ADDRESS 13
 
 // Variables
 int Max_Value = 12;
@@ -25,9 +23,6 @@ void setup() {
     pinMode(LED_Green, OUTPUT);
     pinMode(LED_Red, OUTPUT);
     pinMode(ISRinterrupt_Pin, INPUT);
-
-    Wire.begin(I2C_SLAVE_ADDRESS);
-    Wire.onRequest(I2C_Transfer_Function);
 
     xTaskCreate(Read_Sensor_Data, "Read Sensor data", 400, NULL, 1, NULL);
     xTaskCreate(ConsolDisplay_Sensor_Data, "Display Sensor Information on the console", 128, (void*)&data, 1, NULL);
@@ -75,10 +70,6 @@ void toggleLED(int pin) {
     vTaskDelay(pdMS_TO_TICKS(200));
     digitalWrite(pin, LOW);
     vTaskDelay(pdMS_TO_TICKS(200));}
-
-void I2C_Transfer_Function() {
-    Wire.write((uint8_t*)&Sensor_data, sizeof(Sensor_data)); // Transfer data as byte array
-}
 
 void ISRinterrupt() {
     esp_deep_sleep_start(); // Put ESP32 into deep sleep mode
