@@ -12,10 +12,7 @@
 //Variables
 int Max_Value = 12;
 int Min_Value = 6;
-float Sensor_data;
-float V;
-float Vn;
-
+float data;
 
 // LED Pinout
 int LED_Yellow = 5;
@@ -38,8 +35,8 @@ void setup() {
   Wire.onRequest(I2C_Transfer_Function);
   
   xTaskCreate(Read_Sensor_Data, "Read Data from Sensor", 400, NULL ,1,NULL);
-  xTaskCreate(ConsolDisplay_Sensor_Data, "Display Reading Sensor data on Consol", 128, (void*)&Sensor_data,1,NULL);
-  xTaskCreate(Notify_Output, "Notify With LEDs the State of the Parameter Measured", 128, (void*)&Sensor_data,1,NULL);
+  xTaskCreate(ConsolDisplay_Sensor_Data, "Display Reading Input data on Consol", 128, (void*)&data,1,NULL);
+  xTaskCreate(Notify_Output, "Notify With LEDs the State of the Parameter Measured", 128, (void*)&data,1,NULL);
 
   attachInterrupt(digitalPinToInterrupt(ISRinterrupt_Pin),ISRinterrupt,LOW); // Interrupt function to ensure that our MCU will stay in idle mode until the master send Signal High that wake Up our MCU
   vTaskStartScheduler();}
@@ -49,7 +46,7 @@ void Read_Sensor_Data( void *pvParameters ){
   while(1)
   {
     Sensor_data = random(5,20);
-    if ( isnan(Sensor_data))
+    if ( isnan(data))
       {
         Serial.println("Failed to read from sensor!");
       }
@@ -61,14 +58,14 @@ void Read_Sensor_Data( void *pvParameters ){
 void ConsolDisplay_Sensor_Data(void *pvParameters){
   while(1)
   {
-    V =*((float*)pvParameters);
-    Serial.print("Sensor Data:");
+    float V =*((float*)pvParameters);
+    Serial.print("Input Data:");
     Serial.println(V);
   }}
 
 void Notify_Output(void *pvParameters){
   while(1){
-    Vn =*((float*)pvParameters);
+    float Vn =*((float*)pvParameters);
 
     if (Vn <= Min_Value)  // if the Sensor value is lower than our min value posed the The Yellow LED will blink  
     {
@@ -93,8 +90,8 @@ void toggleLED(int pin) {
     vTaskDelay(pdMS_TO_TICKS(200));}
 
 void I2C_Transfer_Function(void *pvParameters){  
-    Wire.write((int)Sensor_data);                             // Sending Integer Data
-  //Wire.write((uint8_t*)&Sensor_data, sizeof(Sensor_data)); // Sending Precise Sensor Informations type Float 
+    Wire.write((int)data);                             // Sending Integer Data
+  //Wire.write((uint8_t*)&data, sizeof(data)); // Sending Precise Sensor Informations type Float 
   } 
 
 void ISRinterrupt(){
