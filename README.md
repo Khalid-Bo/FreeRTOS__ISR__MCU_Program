@@ -21,7 +21,7 @@ In this project:
 1. Installation
 Clone this repository to your local machine:
 ```bash
-git clone https://github.com/Khalid-Bo/FreeRTOS_Slave_node.git
+git clone https://github.com/Khalid-Bo/FreeRTOS__ISR__MCU_Program.git
 ```
 2. Compile and Flash the Code to the MCU using appropiate IDE-env
 
